@@ -26,12 +26,20 @@ app.get("/api/hello", function (req, res) {
 
 app.get("/api/whoami", function (req, res) {
   
-  let ipaddress = "";
-  let language = "" ;
-  let software = "" ;
-  res.json({ipaddress,	
-language,	
-software	});
+  let userAgent = req.get('User-Agent');
+  let os = userAgent.substring(userAgent.indexOf('(') + 1,
+                               userAgent.indexOf(')'));
+  let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  
+  ip = ip.substr(0,15)
+
+  let data = {
+    'ip': ip,
+    'lang': req.get('Accept-Language').split(',')[0],
+    'os': os
+  }
+  console.log(data);
+  res.json(data);
 });
 
 // listen for requests :)
